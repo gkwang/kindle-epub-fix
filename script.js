@@ -124,6 +124,33 @@ class EPUBBook {
       }
     }
   }
+ 
+findOPF() {
+      // Find OPF file
+      if (!('META-INF/container.xml' in this.files)) {
+        console.error('Cannot find META-INF/container.xml')
+        return
+      }
+      const meta_inf_str = this.files['META-INF/container.xml']
+      const meta_inf = parser.parseFromString(meta_inf_str, 'text/xml')
+      let opf_filename = ''
+      for (const rootfile of meta_inf.getElementsByTagName('rootfile')) {
+        if (rootfile.getAttribute('media-type') === 'application/oebps-package+xml') {
+          opf_filename = rootfile.getAttribute('full-path')
+        }
+      }
+  
+      // Read OPF file
+      if (!(opf_filename in this.files)) {
+        console.error('Cannot find OPF file!')
+        return
+      }
+  }
+  
+  fixDuplicateID() {
+    this.findOPF();
+
+  }
 
   // Fix language field not defined or not available
   fixBookLanguage() {
@@ -143,25 +170,7 @@ class EPUBBook {
       'glv', 'nor', 'nno', 'por', 'oci', 'roh', 'gla', 'spa', 'swe', 'tam', 'cym', 'wel',
     ]
 
-    // Find OPF file
-    if (!('META-INF/container.xml' in this.files)) {
-      console.error('Cannot find META-INF/container.xml')
-      return
-    }
-    const meta_inf_str = this.files['META-INF/container.xml']
-    const meta_inf = parser.parseFromString(meta_inf_str, 'text/xml')
-    let opf_filename = ''
-    for (const rootfile of meta_inf.getElementsByTagName('rootfile')) {
-      if (rootfile.getAttribute('media-type') === 'application/oebps-package+xml') {
-        opf_filename = rootfile.getAttribute('full-path')
-      }
-    }
-
-    // Read OPF file
-    if (!(opf_filename in this.files)) {
-      console.error('Cannot find OPF file!')
-      return
-    }
+    this.findOPF()
 
     const opf_str = this.files[opf_filename]
     try {
