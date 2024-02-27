@@ -126,6 +126,7 @@ class EPUBBook {
   }
  
 findOPF() {
+  const parser = new DOMParser()
       // Find OPF file
       if (!('META-INF/container.xml' in this.files)) {
         console.error('Cannot find META-INF/container.xml')
