@@ -145,6 +145,7 @@ findOPF() {
         console.error('Cannot find OPF file!')
         return
       }
+  return opf_filename;
   }
   
   fixDuplicateID() {
@@ -170,7 +171,7 @@ findOPF() {
       'glv', 'nor', 'nno', 'por', 'oci', 'roh', 'gla', 'spa', 'swe', 'tam', 'cym', 'wel',
     ]
 
-    this.findOPF()
+    const opf_filename = this.findOPF()
 
     const opf_str = this.files[opf_filename]
     try {
